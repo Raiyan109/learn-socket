@@ -6,6 +6,7 @@ import { Button, Container, TextField, Typography } from '@mui/material'
 
 function App() {
   const [message, setMessage] = useState('')
+  const [showMessage, setShowMessage] = useState('')
   const [room, setRoom] = useState('')
   const [socketId, setSocketId] = useState('')
   const socket = useMemo(() => io('http://localhost:3000'), [])
@@ -18,20 +19,24 @@ function App() {
 
     socket.on('recieve-message', (data) => {
       console.log('Received message:', data)
+      localStorage.setItem('message', data.message)
+      const message = localStorage.getItem('message')
+      setShowMessage(message)
     })
+
 
     // socket.on('disconnect', () => {
     //   console.log('Disconnected from server')
     // })
 
-    return () => {
-      socket.disconnect()
-    }
+    // return () => {
+    //   socket.disconnect()
+    // }
   }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    socket.emit('message', { message, room })
+    socket.emit('send_message', { message })
     setMessage('')
     setRoom('')
   }
@@ -49,17 +54,21 @@ function App() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <TextField
+          {/* <TextField
             id='outlined-basic'
             label='Room'
             variant='outlined'
             value={room}
             onChange={(e) => setRoom(e.target.value)}
-          />
+          /> */}
           <Button
             type='submit'
             variant='contained' color='primary'>Send</Button>
         </form>
+      </Container>
+
+      <Container>
+        <Typography variant="h6" component='div' gutterBottom>{showMessage}</Typography>
       </Container>
     </div>
   )

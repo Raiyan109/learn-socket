@@ -29,14 +29,10 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
 
-    socket.on('message', (data) => {
-        console.log('Received message:', data.message);
-        console.log('Receiver room:', data.room);
-        io.to(data.room).emit('recieve-message', data.message);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('A user disconnected', socket.id);
+    socket.on('send_message', (data) => {
+        console.log('recieved data from client', data);
+        // Now emit the message back to everyone else who is connected with the server
+        io.emit('recieve-message', data)
     })
 })
 

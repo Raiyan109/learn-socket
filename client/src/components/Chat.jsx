@@ -2,6 +2,8 @@ import { Button, Container, TextField } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
 import { io } from "socket.io-client"
 import { RxAvatar } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
+import { GiEntryDoor } from "react-icons/gi";
 
 
 const Chat = () => {
@@ -9,6 +11,7 @@ const Chat = () => {
     const [socketId, setSocketId] = useState('')
     const [showMessage, setShowMessage] = useState([])
     const socket = useMemo(() => io('http://localhost:3000'), [])
+    const navigate = useNavigate();
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -22,15 +25,6 @@ const Chat = () => {
             // const message = localStorage.getItem('message')
             // setShowMessage(message)
         })
-
-
-        // socket.on('disconnect', () => {
-        //   console.log('Disconnected from server')
-        // })
-
-        // return () => {
-        //   socket.disconnect()
-        // }
     }, [])
 
     console.log(showMessage);
@@ -48,13 +42,27 @@ const Chat = () => {
         }
         setMessage('')
     }
+
+    // Leave chat
+    const handleLeaveChat = () => {
+        localStorage.removeItem('userName');
+        navigate('/');
+        window.location.reload();
+    };
     return (
         <div>
 
             <div className="container mx-auto shadow-lg rounded-lg">
                 {/* <!-- headaer --> */}
                 <div className="px-5 py-5 flex justify-between items-center bg-white border-b-2">
-                    <div className="font-semibold text-2xl">GoingChat</div>
+                    <header className="chat__mainHeader">
+                        <button onClick={handleLeaveChat} title="Save" class="cursor-pointer flex items-center fill-red-400 bg-red-950 hover:bg-red-900 active:border active:border-red-400 rounded-md duration-100 p-2">
+                            <GiEntryDoor className="text-red-400 font-bold " />
+                            <span class="text-sm text-red-400 font-bold pr-1">Leave Chat</span>
+                        </button>
+
+                    </header>
+
                     <div className="w-1/2">
                         <input
                             type="text"
@@ -283,7 +291,7 @@ const Chat = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
 
     )
 }

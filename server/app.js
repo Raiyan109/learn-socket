@@ -27,9 +27,20 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
-    console.log('Id: ', socket.id);
+    console.log('A user connected', socket.id);
+
+    socket.on('message', (data) => {
+        console.log('Received message:', data.message);
+        console.log('Receiver room:', data.room);
+        io.to(data.room).emit('recieve-message', data.message);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('A user disconnected', socket.id);
+    })
 })
+
+
 
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);

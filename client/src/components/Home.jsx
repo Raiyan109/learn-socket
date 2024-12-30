@@ -4,55 +4,19 @@ import { io } from 'socket.io-client'
 import { Button, Container, TextField, Typography } from '@mui/material'
 
 const Home = () => {
-    const [message, setMessage] = useState('')
     const [userName, setUserName] = useState('')
-    const [showMessage, setShowMessage] = useState('')
     const [room, setRoom] = useState('')
-    const [socketId, setSocketId] = useState('')
-    const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
-
-    useEffect(() => {
-        socket.on('connect', () => {
-            setSocketId(socket.id)
-            console.log('Connected to server', socket.id)
-        })
-
-        socket.on('recieve-message', (data) => {
-            console.log('Received message:', data)
-            localStorage.setItem('message', data.message)
-            const message = localStorage.getItem('message')
-            setShowMessage(message)
-        })
-
-
-        // socket.on('disconnect', () => {
-        //   console.log('Disconnected from server')
-        // })
-
-        // return () => {
-        //   socket.disconnect()
-        // }
-    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault()
         localStorage.setItem('userName', userName);
         navigate('/chat');
     }
-    // const handleSubmit = (e) => {
-    //     e.preventDefault()
-    //     socket.emit('send_message', { message })
-    //     setMessage('')
-    //     setRoom('')
-    // }
+
     return (
         <div>
-
             <Container>
-
-                <Typography variant="h6" component='div' gutterBottom>{socketId}</Typography>
-
                 <form onSubmit={handleSubmit}>
                     <h2 className="home__header">Sign in to Open Chat</h2>
                     <TextField
@@ -80,10 +44,6 @@ const Home = () => {
                         type='submit'
                         variant='contained' color='primary'>Send</Button>
                 </form> */}
-            </Container>
-
-            <Container>
-                <Typography variant="h6" component='div' gutterBottom>{showMessage}</Typography>
             </Container>
         </div>
     )

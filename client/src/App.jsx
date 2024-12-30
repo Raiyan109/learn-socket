@@ -7,10 +7,18 @@ import Header from './components/Header'
 const App = () => {
   return (
     <div>
-      <Header />
+      <Header logoSrc="https://www.svgrepo.com/show/499962/music.svg"
+        logoText="Chat App"
+        menuItems={[
+          { text: 'Home', link: '/' },
+          { text: 'Chat', link: '/chat' },
+        ]}
+        buttonText="Download"
+        buttonLink="https://themesberg.com/product/tailwind-css/landing-page" />
       <RouterProvider router={routes} />
     </div>
   )
 }
 
 export default App
+

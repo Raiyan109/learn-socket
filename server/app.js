@@ -51,6 +51,7 @@ let users = [];
 io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
 
+    // Group message
     socket.on('send-group-message', (data) => {
         console.log('recieved data from client', data);
         // Now emit the message back to everyone else who is connected with the server
@@ -67,6 +68,11 @@ io.on('connection', (socket) => {
         // Sends the list of users to the client
         io.emit('new-group-user-response', users);
     })
+
+
+
+    // Private message
+
 
     // Listen for when a user disconnects
     socket.on('disconnect', () => {

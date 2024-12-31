@@ -9,7 +9,7 @@ const Home = () => {
     const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleGroupChatSubmit = (e) => {
         e.preventDefault()
         localStorage.setItem('userName', userName);
         // Send username and socket id to server
@@ -17,11 +17,20 @@ const Home = () => {
         navigate('/group-chat');
     }
 
+    const handlePrivateChatSubmit = (e) => {
+        e.preventDefault()
+        // localStorage.setItem('userName', userName);
+        // // Send username and socket id to server
+        // socket.emit('new-private-user', { userName, id: socket.id })
+        navigate('/private-chat');
+    }
+
+
     return (
         <div>
-            <Container>
-                <form onSubmit={handleSubmit}>
-                    <h2 className="home__header">Sign in to Open Chat</h2>
+            <Container style={{ border: '1px solid #ccc', padding: '20px', marginBottom: '20px', borderRadius: '5px' }}>
+                <form onSubmit={handleGroupChatSubmit}>
+                    <h2 className="" style={{ textAlign: 'center', padding: '20px' }}>Sign in to Open Group Chat</h2>
                     <TextField
                         id='outlined-basic'
                         label='User Name'
@@ -34,19 +43,24 @@ const Home = () => {
                         type='submit'
                         variant='contained' color='primary'>Sign in</Button>
                 </form>
-                {/* <form onSubmit={handleSubmit}>
+            </Container>
+
+            <Container style={{ border: '1px solid #ccc', padding: '20px', marginBottom: '20px', borderRadius: '5px' }}>
+                <form onSubmit={handlePrivateChatSubmit}>
+                    <h2 style={{ textAlign: 'center', padding: '20px' }}>Sign in to Open Private Chat</h2>
                     <TextField
                         id='outlined-basic'
-                        label='Message'
+                        label='User Name'
                         variant='outlined'
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
                     />
 
                     <Button
                         type='submit'
-                        variant='contained' color='primary'>Send</Button>
-                </form> */}
+                        variant='contained' color='primary'>Sign in</Button>
+                </form>
+
             </Container>
         </div>
     )

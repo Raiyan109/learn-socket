@@ -20,6 +20,7 @@ const GroupChat = () => {
             console.log('Connected to server', socket.id)
         })
 
+        // Group chat
         socket.on('recieve-group-message', (data) => {
             setShowMessage((prevMessages) => [...prevMessages, data]);
             // localStorage.setItem('message', data.text)

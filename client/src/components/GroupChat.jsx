@@ -44,10 +44,10 @@ const GroupChat = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (message.trim() && localStorage.getItem('userName')) {
+        if (message.trim() && localStorage.getItem('groupUserName')) {
             socket.emit('send-group-message', {
                 text: message,
-                name: localStorage.getItem('userName'),
+                name: localStorage.getItem('groupUserName'),
                 id: `${socketId}${Math.random()}`,
                 socketId: socketId,
             })
@@ -57,7 +57,7 @@ const GroupChat = () => {
 
     // Leave chat
     const handleLeaveChat = () => {
-        localStorage.removeItem('userName');
+        localStorage.removeItem('groupUserName');
         navigate('/');
         window.location.reload();
     };
@@ -188,7 +188,7 @@ const GroupChat = () => {
                     {/* <!-- message --> */}
                     <div className="w-full px-5 flex flex-col justify-between">
                         <div className="flex flex-col mt-5">
-                            {showMessage.map((data) => data.name === localStorage.getItem('userName') ? (
+                            {showMessage.map((data) => data.name === localStorage.getItem('groupUserName') ? (
                                 <div className="flex justify-end mb-4">
                                     <div
                                         className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"

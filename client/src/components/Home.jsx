@@ -4,22 +4,23 @@ import { io } from 'socket.io-client'
 import { Button, Container, TextField, Typography } from '@mui/material'
 
 const Home = () => {
-    const [userName, setUserName] = useState('')
+    const [groupUserName, setGroupUserName] = useState('')
+    const [privateUserName, setPrivateUserName] = useState('')
     const [room, setRoom] = useState('')
     const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
 
     const handleGroupChatSubmit = (e) => {
         e.preventDefault()
-        localStorage.setItem('userName', userName);
+        localStorage.setItem('groupUserName', groupUserName);
         // Send username and socket id to server
-        socket.emit('new-group-user', { userName, id: socket.id })
+        socket.emit('new-group-user', { groupUserName, id: socket.id })
         navigate('/group-chat');
     }
 
     const handlePrivateChatSubmit = (e) => {
         e.preventDefault()
-        // localStorage.setItem('userName', userName);
+        // localStorage.setItem('groupUserName', userName);
         // // Send username and socket id to server
         // socket.emit('new-private-user', { userName, id: socket.id })
         navigate('/private-chat');
@@ -35,8 +36,8 @@ const Home = () => {
                         id='outlined-basic'
                         label='User Name'
                         variant='outlined'
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
+                        value={groupUserName}
+                        onChange={(e) => setGroupUserName(e.target.value)}
                     />
 
                     <Button
@@ -52,8 +53,8 @@ const Home = () => {
                         id='outlined-basic'
                         label='User Name'
                         variant='outlined'
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
+                        value={privateUserName}
+                        onChange={(e) => setPrivateUserName(e.target.value)}
                     />
 
                     <Button

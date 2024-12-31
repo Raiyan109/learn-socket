@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "../components/Home";
-import Chat from "../components/Chat";
+import GroupChat from "../components/GroupChat";
 
 const routes = createBrowserRouter([
     {
@@ -8,8 +8,8 @@ const routes = createBrowserRouter([
         element: <Home />
     },
     {
-        path: '/chat',
-        element: <Chat />
+        path: '/group-chat',
+        element: <GroupChat />
     },
 ])
 

@@ -11,7 +11,7 @@ const App = () => {
         logoText="Chat App"
         menuItems={[
           { text: 'Home', link: '/' },
-          { text: 'Chat', link: '/chat' },
+          { text: 'Group Chat', link: '/group-chat' },
         ]}
         buttonText="Download"
         buttonLink="https://themesberg.com/product/tailwind-css/landing-page" />

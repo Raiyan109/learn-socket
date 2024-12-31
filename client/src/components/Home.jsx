@@ -14,7 +14,7 @@ const Home = () => {
         localStorage.setItem('userName', userName);
         // Send username and socket id to server
         socket.emit('newUser', { userName, id: socket.id })
-        navigate('/chat');
+        navigate('/group-chat');
     }
 
     return (

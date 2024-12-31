@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { GiEntryDoor } from "react-icons/gi";
 
 
-const Chat = () => {
+const GroupChat = () => {
     const [message, setMessage] = useState('')
     const [socketId, setSocketId] = useState('')
     const [showMessage, setShowMessage] = useState([])
@@ -306,4 +306,4 @@ const Chat = () => {
     )
 }
 
-export default Chat
+export default GroupChat

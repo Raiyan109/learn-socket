@@ -5,7 +5,7 @@ import { createServer } from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { MessageModel } from './modules/models/message/message.js';
-const port = 3000;
+const port = 3001;
 
 import path from 'path';
 const __dirname = path.resolve();
@@ -47,6 +47,7 @@ app.post('/message', async (req, res) => {
 })
 
 let users = [];
+let privateUsers = [];
 
 io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
@@ -72,6 +73,15 @@ io.on('connection', (socket) => {
 
 
     // Private message
+    // Listen for new users
+    socket.on('new-private-user', (data) => {
+        // Add private user
+        privateUsers.push(data)
+
+        // Sends the list of private users to the client
+        io.emit('new-private-user-response', privateUsers);
+
+    })
 
 
     // Listen for when a user disconnects

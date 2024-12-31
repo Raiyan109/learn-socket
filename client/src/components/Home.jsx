@@ -7,7 +7,7 @@ const Home = () => {
     const [groupUserName, setGroupUserName] = useState('')
     const [privateUserName, setPrivateUserName] = useState('')
     const [room, setRoom] = useState('')
-    const socket = useMemo(() => io('http://localhost:3000'), [])
+    const socket = useMemo(() => io('http://localhost:3001'), [])
     const navigate = useNavigate();
 
     const handleGroupChatSubmit = (e) => {
@@ -20,9 +20,9 @@ const Home = () => {
 
     const handlePrivateChatSubmit = (e) => {
         e.preventDefault()
-        // localStorage.setItem('groupUserName', userName);
+        localStorage.setItem('privateUserName', privateUserName);
         // // Send username and socket id to server
-        // socket.emit('new-private-user', { userName, id: socket.id })
+        socket.emit('new-private-user', { privateUserName, id: socket.id })
         navigate('/private-chat');
     }
 

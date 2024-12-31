@@ -11,7 +11,7 @@ const GroupChat = () => {
     const [socketId, setSocketId] = useState('')
     const [showMessage, setShowMessage] = useState([])
     const [users, setUsers] = useState([])
-    const socket = useMemo(() => io('http://localhost:3000'), [])
+    const socket = useMemo(() => io('http://localhost:3001'), [])
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -110,7 +110,7 @@ const GroupChat = () => {
                                 className="flex flex-row py-4 px-2 justify-center items-center border-b-2" key={user.id}
                             >
 
-                                <p>{user.userName}</p>
+                                <p>{user.groupUserName}</p>
 
                             </div>
                         ))}

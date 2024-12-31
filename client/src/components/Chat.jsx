@@ -121,7 +121,7 @@ const Chat = () => {
                                 <span className="text-gray-500">Hi Sam, Welcome</span>
                             </div>
                         </div>
-                        <div
+                        {/* <div
                             className="flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-blue-400"
                         >
                             <div className="w-1/4">
@@ -175,7 +175,7 @@ const Chat = () => {
                                 <div className="text-lg font-semibold">Javascript Indonesia</div>
                                 <span className="text-gray-500">Evan : some one can fix this</span>
                             </div>
-                        </div>
+                        </div> */}
                         {/* <!-- end user list --> */}
                     </div>
                     {/* <!-- end chat list --> */}
@@ -212,7 +212,9 @@ const Chat = () => {
                                     </div>
                                 </div>
                             ))}
-
+                            <div className="message__status">
+                                <p>Someone is typing...</p>
+                            </div>
 
                             {/* <div className="flex justify-end mb-4">
                                 <div>

@@ -6,11 +6,14 @@ import { Button, Container, TextField, Typography } from '@mui/material'
 const Home = () => {
     const [userName, setUserName] = useState('')
     const [room, setRoom] = useState('')
+    const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault()
         localStorage.setItem('userName', userName);
+        // Send username and socket id to server
+        socket.emit('newUser', { userName, id: socket.id })
         navigate('/chat');
     }
 

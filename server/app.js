@@ -51,21 +51,21 @@ let users = [];
 io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
 
-    socket.on('send_message', (data) => {
+    socket.on('send-group-message', (data) => {
         console.log('recieved data from client', data);
         // Now emit the message back to everyone else who is connected with the server
-        io.emit('recieve-message', data)
+        io.emit('recieve-group-message', data)
     })
 
     // Send the current user list to the newly connected client
-    socket.emit('newUserResponse', users);
+    socket.emit('new-group-user-response', users);
 
     // Listen for new users
-    socket.on('newUser', (data) => {
+    socket.on('new-group-user', (data) => {
         users.push(data);
 
         // Sends the list of users to the client
-        io.emit('newUserResponse', users);
+        io.emit('new-group-user-response', users);
     })
 
     // Listen for when a user disconnects
@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
         users = users.filter((user) => user.id !== socket.id);
 
         //Sends the list of users to the client
-        io.emit('newUserResponse', users);
+        io.emit('new-group-user-response', users);
         socket.disconnect();
     })
 })

@@ -20,21 +20,21 @@ const GroupChat = () => {
             console.log('Connected to server', socket.id)
         })
 
-        socket.on('recieve-message', (data) => {
+        socket.on('recieve-group-message', (data) => {
             setShowMessage((prevMessages) => [...prevMessages, data]);
             // localStorage.setItem('message', data.text)
             // const message = localStorage.getItem('message')
             // setShowMessage(message)
         })
 
-        socket.on('newUserResponse', (data) => {
+        socket.on('new-group-user-response', (data) => {
             setUsers(data)
         })
 
         return () => {
             socket.off('connect')
-            socket.off('recieve-message')
-            socket.off('newUserResponse')
+            socket.off('recieve-group-message')
+            socket.off('new-group-user-response')
         }
     }, [socket])
 
@@ -44,7 +44,7 @@ const GroupChat = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         if (message.trim() && localStorage.getItem('userName')) {
-            socket.emit('send_message', {
+            socket.emit('send-group-message', {
                 text: message,
                 name: localStorage.getItem('userName'),
                 id: `${socketId}${Math.random()}`,

@@ -43,6 +43,8 @@ app.post('/message', async (req, res) => {
 
 })
 
+let users = [];
+
 io.on('connection', (socket) => {
     console.log('A user connected', socket.id);
 
@@ -50,6 +52,26 @@ io.on('connection', (socket) => {
         console.log('recieved data from client', data);
         // Now emit the message back to everyone else who is connected with the server
         io.emit('recieve-message', data)
+    })
+
+    // Listen for new users
+    socket.on('newUser', (data) => {
+        users.push(data);
+
+        // Sends the list of users to the client
+        io.emit('newUserResponse', users);
+    })
+
+    // Listen for when a user disconnects
+    socket.on('disconnect', () => {
+        console.log('🔥: A user disconnected');
+
+        // Updates the list of users when a user disconnects
+        users = users.filter((user) => user.id !== socket.id);
+
+        //Sends the list of users to the client
+        io.emit('newUserResponse', users);
+        socket.disconnect();
     })
 })
 

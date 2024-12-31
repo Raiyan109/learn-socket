@@ -10,6 +10,7 @@ const Chat = () => {
     const [message, setMessage] = useState('')
     const [socketId, setSocketId] = useState('')
     const [showMessage, setShowMessage] = useState([])
+    const [users, setUsers] = useState([])
     const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
 
@@ -25,9 +26,13 @@ const Chat = () => {
             // const message = localStorage.getItem('message')
             // setShowMessage(message)
         })
-    }, [])
 
-    console.log(showMessage);
+        socket.on('newUserResponse', (data) => {
+            setUsers(data)
+        })
+    }, [socket, users])
+
+    console.log('new user response', users)
 
 
     const handleSubmit = (e) => {
@@ -56,9 +61,9 @@ const Chat = () => {
                 {/* <!-- headaer --> */}
                 <div className="px-5 py-5 flex justify-between items-center bg-white border-b-2">
                     <header className="chat__mainHeader">
-                        <button onClick={handleLeaveChat} title="Save" class="cursor-pointer flex items-center fill-red-400 bg-red-950 hover:bg-red-900 active:border active:border-red-400 rounded-md duration-100 p-2">
+                        <button onClick={handleLeaveChat} title="Save" className="cursor-pointer flex items-center fill-red-400 bg-red-950 hover:bg-red-900 active:border active:border-red-400 rounded-md duration-100 p-2">
                             <GiEntryDoor className="text-red-400 font-bold " />
-                            <span class="text-sm text-red-400 font-bold pr-1">Leave Chat</span>
+                            <span className="text-sm text-red-400 font-bold pr-1">Leave Chat</span>
                         </button>
 
                     </header>
@@ -93,22 +98,16 @@ const Chat = () => {
                         </div>
                         {/* <!-- end search compt --> */}
                         {/* <!-- user list --> */}
-                        <div
-                            className="flex flex-row py-4 px-2 justify-center items-center border-b-2"
-                        >
-                            <div className="w-1/4">
-                                <img
-                                    src="https://source.unsplash.com/_7LbC5J-jw4/600x600"
-                                    className="object-cover h-12 w-12 rounded-full"
-                                    alt=""
-                                />
+                        {users.map((user) => (
+                            <div
+                                className="flex flex-row py-4 px-2 justify-center items-center border-b-2" key={user.id}
+                            >
+
+                                <p>{user.userName}</p>
+
                             </div>
-                            <div className="w-full">
-                                <div className="text-lg font-semibold">Luis1994</div>
-                                <span className="text-gray-500">Pick me at 9:00 Am</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-row py-4 px-2 items-center border-b-2">
+                        ))}
+                        {/* <div className="flex flex-row py-4 px-2 items-center border-b-2">
                             <div className="w-1/4">
                                 <img
                                     src="https://source.unsplash.com/otT2199XwI8/600x600"
@@ -120,7 +119,7 @@ const Chat = () => {
                                 <div className="text-lg font-semibold">Everest Trip 2021</div>
                                 <span className="text-gray-500">Hi Sam, Welcome</span>
                             </div>
-                        </div>
+                        </div> */}
                         {/* <div
                             className="flex flex-row py-4 px-2 items-center border-b-2 border-l-4 border-blue-400"
                         >

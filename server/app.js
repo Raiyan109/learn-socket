@@ -7,6 +7,9 @@ import dotenv from 'dotenv';
 import { MessageModel } from './modules/models/message/message.js';
 const port = 3000;
 
+import path from 'path';
+const __dirname = path.resolve();
+
 const app = express();
 const server = createServer(app);
 dotenv.config();
@@ -78,6 +81,13 @@ io.on('connection', (socket) => {
     })
 })
 
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
+    })
+}
 
 mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGO_URI)

@@ -21,7 +21,7 @@ const Chat = () => {
         })
 
         socket.on('recieve-message', (data) => {
-            setShowMessage([...showMessage, data])
+            setShowMessage((prevMessages) => [...prevMessages, data]);
             // localStorage.setItem('message', data.text)
             // const message = localStorage.getItem('message')
             // setShowMessage(message)
@@ -30,7 +30,13 @@ const Chat = () => {
         socket.on('newUserResponse', (data) => {
             setUsers(data)
         })
-    }, [socket, users])
+
+        return () => {
+            socket.off('connect')
+            socket.off('recieve-message')
+            socket.off('newUserResponse')
+        }
+    }, [socket])
 
     console.log('new user response', users)
 
@@ -194,7 +200,9 @@ const Chat = () => {
                                         className="object-cover h-8 w-8 rounded-full"
                                         alt=""
                                     /> */}
-                                    <RxAvatar className="object-cover h-8 w-8 rounded-full" />
+                                    {/* <RxAvatar className="object-cover h-8 w-8 rounded-full" /> */}
+                                    <span>you</span>
+                                    {/* <span>{data.name}</span> */}
                                 </div>
                             ) : (
                                 <div className="flex justify-start mb-4">
@@ -203,7 +211,8 @@ const Chat = () => {
                                         className="object-cover h-8 w-8 rounded-full"
                                         alt=""
                                     /> */}
-                                    <RxAvatar className="object-cover h-8 w-8 rounded-full" />
+                                    {/* <RxAvatar className="object-cover h-8 w-8 rounded-full" /> */}
+                                    <span>{data.name}</span>
                                     <div
                                         className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
                                     >

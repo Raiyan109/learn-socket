@@ -54,6 +54,9 @@ io.on('connection', (socket) => {
         io.emit('recieve-message', data)
     })
 
+    // Send the current user list to the newly connected client
+    socket.emit('newUserResponse', users);
+
     // Listen for new users
     socket.on('newUser', (data) => {
         users.push(data);

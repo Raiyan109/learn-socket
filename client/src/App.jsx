@@ -12,6 +12,7 @@ const App = () => {
         menuItems={[
           { text: 'Home', link: '/' },
           { text: 'Group Chat', link: '/group-chat' },
+          { text: 'Private Chat Login', link: '/private-chat-login' },
           { text: 'Private Chat', link: '/private-chat' },
         ]}
         buttonText="Download"

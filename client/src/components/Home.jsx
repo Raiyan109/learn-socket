@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client'
 import { Button, Container, TextField, Typography } from '@mui/material'
 
@@ -18,13 +18,13 @@ const Home = () => {
         navigate('/group-chat');
     }
 
-    const handlePrivateChatSubmit = (e) => {
-        e.preventDefault()
-        localStorage.setItem('privateUserName', privateUserName);
-        // // Send username and socket id to server
-        socket.emit('new-private-user', { privateUserName, id: socket.id })
-        navigate('/private-chat');
-    }
+    // const handlePrivateChatSubmit = (e) => {
+    //     e.preventDefault()
+    //     localStorage.setItem('privateUserName', privateUserName);
+    //     // // Send username and socket id to server
+    //     socket.emit('new-private-user', { privateUserName, id: socket.id })
+    //     navigate('/private-chat');
+    // }
 
 
     return (
@@ -46,7 +46,12 @@ const Home = () => {
                 </form>
             </Container>
 
-            <Container style={{ border: '1px solid #ccc', padding: '20px', marginBottom: '20px', borderRadius: '5px' }}>
+            <Link to='/private-chat-login'>
+                <Button
+                    type='submit'
+                    variant='contained' color='primary'>Login in private chat room</Button>
+            </Link>
+            {/* <Container style={{ border: '1px solid #ccc', padding: '20px', marginBottom: '20px', borderRadius: '5px' }}>
                 <form onSubmit={handlePrivateChatSubmit}>
                     <h2 style={{ textAlign: 'center', padding: '20px' }}>Sign in to Open Private Chat</h2>
                     <TextField
@@ -62,7 +67,7 @@ const Home = () => {
                         variant='contained' color='primary'>Sign in</Button>
                 </form>
 
-            </Container>
+            </Container> */}
         </div>
     )
 }

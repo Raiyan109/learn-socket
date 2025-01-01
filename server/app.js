@@ -73,10 +73,14 @@ io.on('connection', (socket) => {
 
 
     // Private message
-    socket.on('send-private-message', (data) => {
-        console.log('recieved private message data from client', data);
+    socket.on('send-private-message', ({ text, name, recipientId }) => {
+        console.log('recieved private message reciepentId from client', recipientId);
         // Now emit the message back to everyone else who is connected with the server
-        // io.emit('recieve-group-message', data)
+        io.to(recipientId).emit('recieve-private-message', {
+            text,
+            name,
+            recipientId
+        })
     })
     // Listen for new users
     socket.on('new-private-user', (data) => {

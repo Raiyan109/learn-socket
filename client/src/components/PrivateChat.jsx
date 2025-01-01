@@ -12,11 +12,10 @@ const PrivateChat = () => {
     const [socketId, setSocketId] = useState('')
     const [message, setMessage] = useState('');
     const [privateUsers, setPrivateUsers] = useState([])
+    const [showPrivateMessages, setShowPrivateMessages] = useState([])
     const [recipientId, setRecipientId] = useState('');
     const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
-    console.log(recipientId, 'reciepentId');
-
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -25,6 +24,11 @@ const PrivateChat = () => {
         })
 
         // Private chat
+        socket.on('recieve-private-message', (data) => {
+            console.log(data, 'data from recieve-private-message');
+
+            setShowPrivateMessages((prevMessages) => [...prevMessages, data])
+        })
 
 
         // Private chat response
@@ -32,14 +36,14 @@ const PrivateChat = () => {
             setPrivateUsers(data)
         })
 
-        return () => {
-            socket.off('connect')
-            // socket.off('recieve-group-message')
-            socket.off('new-private-user-response')
-        }
+        // return () => {
+        //     socket.off('connect')
+        //     socket.off('recieve-private-message')
+        //     socket.off('new-private-user-response')
+        // }
     }, [socket])
 
-    console.log(privateUsers, 'private Users')
+    console.log(showPrivateMessages, 'private messages');
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -122,7 +126,39 @@ const PrivateChat = () => {
                     {/* <!-- message --> */}
                     <div className="w-full px-5 flex flex-col justify-between">
                         <div className="flex flex-col mt-5">
+                            {showPrivateMessages.map((data) => data.name === localStorage.getItem('privateUserName') ? (
+                                <div className="flex justify-end mb-4">
+                                    <div
+                                        className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
+                                    >
 
+                                        {data.text}
+                                    </div>
+                                    {/* <img
+                                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
+                                        className="object-cover h-8 w-8 rounded-full"
+                                        alt=""
+                                    /> */}
+                                    {/* <RxAvatar className="object-cover h-8 w-8 rounded-full" /> */}
+                                    <span>you</span>
+                                    {/* <span>{data.name}</span> */}
+                                </div>
+                            ) : (
+                                <div className="flex justify-start mb-4">
+                                    {/* <img
+                                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
+                                        className="object-cover h-8 w-8 rounded-full"
+                                        alt=""
+                                    /> */}
+                                    {/* <RxAvatar className="object-cover h-8 w-8 rounded-full" /> */}
+                                    <span>{data.name}</span>
+                                    <div
+                                        className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
+                                    >
+                                        {data.text}
+                                    </div>
+                                </div>
+                            ))}
                             <div className="message__status">
                                 <p>Someone is typing...</p>
                             </div>

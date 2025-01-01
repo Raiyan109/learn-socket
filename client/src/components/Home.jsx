@@ -5,9 +5,9 @@ import { Button, Container, TextField, Typography } from '@mui/material'
 
 const Home = () => {
     const [groupUserName, setGroupUserName] = useState('')
-    const [privateUserName, setPrivateUserName] = useState('')
+    const [privateUserName, setPrivateUserName] = useState([])
     const [room, setRoom] = useState('')
-    const socket = useMemo(() => io('http://localhost:3001'), [])
+    const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
 
     const handleGroupChatSubmit = (e) => {

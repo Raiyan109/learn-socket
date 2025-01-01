@@ -5,7 +5,7 @@ import { createServer } from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { MessageModel } from './modules/models/message/message.js';
-const port = 3001;
+const port = 3000;
 
 import path from 'path';
 const __dirname = path.resolve();
@@ -77,6 +77,7 @@ io.on('connection', (socket) => {
     socket.on('new-private-user', (data) => {
         // Add private user
         privateUsers.push(data)
+        console.log(privateUsers, 'private users');
 
         // Sends the list of private users to the client
         io.emit('new-private-user-response', privateUsers);
@@ -97,13 +98,13 @@ io.on('connection', (socket) => {
     })
 })
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/dist')));
+// if (process.env.NODE_ENV === 'production') {
+//     app.use(express.static(path.join(__dirname, '../client/dist')));
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
-    })
-}
+//     app.get('*', (req, res) => {
+//         res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
+//     })
+// }
 
 mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGO_URI)

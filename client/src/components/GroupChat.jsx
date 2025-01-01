@@ -11,7 +11,7 @@ const GroupChat = () => {
     const [socketId, setSocketId] = useState('')
     const [showMessage, setShowMessage] = useState([])
     const [users, setUsers] = useState([])
-    const socket = useMemo(() => io('http://localhost:3001'), [])
+    const socket = useMemo(() => io('http://localhost:3000'), [])
     const navigate = useNavigate();
 
     useEffect(() => {

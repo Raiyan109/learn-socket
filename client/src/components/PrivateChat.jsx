@@ -43,15 +43,14 @@ const PrivateChat = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // if (message.trim() && localStorage.getItem('groupUserName')) {
-        //     socket.emit('send-group-message', {
-        //         text: message,
-        //         name: localStorage.getItem('groupUserName'),
-        //         id: `${socketId}${Math.random()}`,
-        //         socketId: socketId,
-        //     })
-        // }
-        // setMessage('')
+        if (message.trim() && recipientId) {
+            socket.emit('send-private-message', {
+                text: message,
+                name: localStorage.getItem('privateUserName'),
+                recipientId: recipientId
+            })
+        }
+        setMessage('')
     }
 
     // Leave chat

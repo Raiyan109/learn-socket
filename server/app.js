@@ -73,6 +73,11 @@ io.on('connection', (socket) => {
 
 
     // Private message
+    socket.on('send-private-message', (data) => {
+        console.log('recieved private message data from client', data);
+        // Now emit the message back to everyone else who is connected with the server
+        // io.emit('recieve-group-message', data)
+    })
     // Listen for new users
     socket.on('new-private-user', (data) => {
         // Add private user
@@ -81,7 +86,6 @@ io.on('connection', (socket) => {
 
         // Sends the list of private users to the client
         io.emit('new-private-user-response', privateUsers);
-
     })
 
 
@@ -106,13 +110,17 @@ io.on('connection', (socket) => {
 //     })
 // }
 
-mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        server.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
-        });
-    })
-    .catch((error) => {
-        console.log(error)
-    })
+server.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
+// mongoose.set("strictQuery", false);
+// mongoose.connect(process.env.MONGO_URI)
+//     .then(() => {
+//         server.listen(port, () => {
+//             console.log(`Server is running on port ${port}`);
+//         });
+//     })
+//     .catch((error) => {
+//         console.log(error)
+//     })

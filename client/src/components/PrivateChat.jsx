@@ -1,214 +1,68 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Box, IconButton, InputAdornment, TextField } from '@mui/material';
-import { Button, Container } from "@mui/material"
-import { CiSearch } from "react-icons/ci";
-import { MdFavorite } from "react-icons/md";
-import { IoIosAttach, IoMdSend } from "react-icons/io";
-import { io } from 'socket.io-client';
-import { useNavigate } from "react-router-dom";
-import { GiEntryDoor } from "react-icons/gi";
-
-const PrivateChat = () => {
-    const [socketId, setSocketId] = useState('')
-    const [message, setMessage] = useState('');
-    const [privateUsers, setPrivateUsers] = useState([])
-    const [showPrivateMessages, setShowPrivateMessages] = useState([])
-    const [recipientId, setRecipientId] = useState('');
-    const socket = useMemo(() => io('http://localhost:3000'), [])
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        socket.on('connect', () => {
-            setSocketId(socket.id)
-            console.log('Connected to server', socket.id)
-        })
-
-        // Private chat
-        socket.on('recieve-private-message', (data) => {
-            console.log(data, 'data from recieve-private-message');
-
-            setShowPrivateMessages((prevMessages) => [...prevMessages, data])
-        })
+import { use, useEffect } from "react"
+import { useState } from "react"
 
 
-        // Private chat response
-        socket.on('new-private-user-response', (data) => {
-            setPrivateUsers(data)
-        })
+const PrivateChat = ({ socket, username, room }) => {
+    const [message, setMessage] = useState('')
 
-        // return () => {
-        //     socket.off('connect')
-        //     socket.off('recieve-private-message')
-        //     socket.off('new-private-user-response')
-        // }
-    }, [socket])
-
-    console.log(showPrivateMessages, 'private messages');
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if (message.trim() && recipientId) {
-            socket.emit('send-private-message', {
-                text: message,
-                name: localStorage.getItem('privateUserName'),
-                recipientId: recipientId
-            })
+    const sendMessage = async () => {
+        if (message !== '') {
+            const messageData = {
+                room: room,
+                author: username,
+                message: message,
+                time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()
+            }
+            await socket.emit('send-private-message', messageData)
+            setMessage('')
         }
-        setMessage('')
     }
 
-    // Leave chat
-    const handleLeaveChat = () => {
-        localStorage.removeItem('groupUserName');
-        navigate('/');
-        window.location.reload();
-    };
+    useEffect(() => {
+        socket.on('recieve-private-message', (data) => {
+            console.log('🔥: A user recieved a private message', data);
+        })
+
+    }, [socket])
+
 
     return (
         <div>
+            <div className="bg-white border border-slate-200 grid grid-cols-6 gap-2 rounded-xl p-2 text-sm">
+                <h1 className="text-center text-slate-800 text-xl font-bold col-span-6">Send Message</h1>
+                <input
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type your message..." className="bg-slate-100 text-slate-600 h-28 placeholder:text-slate-600 placeholder:opacity-50 border border-slate-200 col-span-6 resize-none outline-none rounded-lg p-2 duration-300 focus:border-slate-600" />
+                <button className="fill-slate-600 col-span-1 flex justify-center items-center rounded-lg p-2 duration-300 bg-slate-100 hover:border-slate-600 focus:fill-blue-200 focus:bg-blue-400 border border-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 512 512">
+                        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm177.6 62.1C192.8 334.5 218.8 352 256 352s63.2-17.5 78.4-33.9c9-9.7 24.2-10.4 33.9-1.4s10.4 24.2 1.4 33.9c-22 23.8-60 49.4-113.6 49.4s-91.7-25.5-113.6-49.4c-9-9.7-8.4-24.9 1.4-33.9s24.9-8.4 33.9 1.4zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path>
+                    </svg>
+                </button>
+                <button className="fill-slate-600 col-span-1 flex justify-center items-center rounded-lg p-2 duration-300 bg-slate-100 hover:border-slate-600 focus:fill-blue-200 focus:bg-blue-400 border border-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 512 512">
+                        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM174.6 384.1c-4.5 12.5-18.2 18.9-30.7 14.4s-18.9-18.2-14.4-30.7C146.9 319.4 198.9 288 256 288s109.1 31.4 126.6 79.9c4.5 12.5-2 26.2-14.4 30.7s-26.2-2-30.7-14.4C328.2 358.5 297.2 336 256 336s-72.2 22.5-81.4 48.1zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"></path></svg>
+                </button>
+                <span className="col-span-2"></span>
+                <button
+                    onClick={sendMessage}
+                    className="bg-slate-100 stroke-slate-600 border border-slate-200 col-span-2 flex justify-center rounded-lg p-2 duration-300 hover:border-slate-600 hover:text-white focus:stroke-blue-200 focus:bg-blue-400">
+                    <svg fill="none" viewBox="0 0 24 24" height="30px" width="30px" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" d="M7.39999 6.32003L15.89 3.49003C19.7 2.22003 21.77 4.30003 20.51 8.11003L17.68 16.6C15.78 22.31 12.66 22.31 10.76 16.6L9.91999 14.08L7.39999 13.24C1.68999 11.34 1.68999 8.23003 7.39999 6.32003Z"></path>
+                        <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" d="M10.11 13.6501L13.69 10.0601"></path>
+                    </svg>
+                </button>
 
-            <div className="container mx-auto shadow-lg rounded-lg">
-                {/* <!-- headaer --> */}
-                <div className="px-5 py-5 flex justify-between items-center bg-white border-b-2">
-                    <header className="chat__mainHeader">
-                        <button onClick={handleLeaveChat} title="Save" className="cursor-pointer flex items-center fill-red-400 bg-red-950 hover:bg-red-900 active:border active:border-red-400 rounded-md duration-100 p-2">
-                            <GiEntryDoor className="text-red-400 font-bold " />
-                            <span className="text-sm text-red-400 font-bold pr-1">Leave Chat</span>
-                        </button>
-
-                    </header>
-
-                    <div className="w-1/2">
-                        <input
-                            type="text"
-                            name=""
-                            id=""
-                            placeholder="search IRL"
-                            className="rounded-2xl bg-gray-100 py-3 px-5 w-full"
-                        />
-                    </div>
-                    <div
-                        className="h-12 w-12 p-2 bg-yellow-500 rounded-full text-white font-semibold flex items-center justify-center"
-                    >
-                        RA
-                    </div>
-                </div>
-                {/* <!-- end header --> */}
-                {/* <!-- Chatting --> */}
-                <div className="flex flex-row justify-between bg-white">
-                    {/* <!-- chat list --> */}
-                    <div className="flex flex-col w-2/5 border-r-2 overflow-y-auto">
-                        {/* <!-- search compt --> */}
-                        <div className="border-b-2 py-4 px-2">
-                            <input
-                                type="text"
-                                placeholder="search chatting"
-                                className="py-2 px-2 border-2 border-gray-200 rounded-2xl w-full"
-                            />
-                        </div>
-                        {/* <!-- end search compt --> */}
-                        {/* <!-- user list --> */}
-                        {privateUsers.map((user) => (
-                            <div
-                                className="flex flex-row py-4 px-2 justify-center items-center border-b-2" key={user.id}
-                            >
-
-                                <p>{user.privateUserName}</p>
-                                <button className='' onClick={() => setRecipientId(user.id)}>
-                                    Chat with <span style={{ backgroundColor: '#000000', color: '#ffffff', borderRadius: '9px', padding: '6px' }}>{user.privateUserName}</span>
-                                </button>
-                            </div>
-                        ))}
-
-                        {/* <!-- end user list --> */}
-                    </div>
-                    {/* <!-- end chat list --> */}
-                    {/* <!-- message --> */}
-                    <div className="w-full px-5 flex flex-col justify-between">
-                        <div className="flex flex-col mt-5">
-                            {showPrivateMessages.map((data) => data.name === localStorage.getItem('privateUserName') ? (
-                                <div className="flex justify-end mb-4">
-                                    <div
-                                        className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white"
-                                    >
-
-                                        {data.text}
-                                    </div>
-                                    {/* <img
-                                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                                        className="object-cover h-8 w-8 rounded-full"
-                                        alt=""
-                                    /> */}
-                                    {/* <RxAvatar className="object-cover h-8 w-8 rounded-full" /> */}
-                                    <span>you</span>
-                                    {/* <span>{data.name}</span> */}
-                                </div>
-                            ) : (
-                                <div className="flex justify-start mb-4">
-                                    {/* <img
-                                        src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                                        className="object-cover h-8 w-8 rounded-full"
-                                        alt=""
-                                    /> */}
-                                    {/* <RxAvatar className="object-cover h-8 w-8 rounded-full" /> */}
-                                    <span>{data.name}</span>
-                                    <div
-                                        className="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white"
-                                    >
-                                        {data.text}
-                                    </div>
-                                </div>
-                            ))}
-                            <div className="message__status">
-                                <p>Someone is typing...</p>
-                            </div>
-
-
-                        </div>
-                        <div className="py-5">
-                            {/* <input
-                                className="w-full bg-gray-300 py-5 px-3 rounded-xl"
-                                type="text"
-                                placeholder="type your message here..."
-                            /> */}
-                            <Container>
-
-                                <form onSubmit={handleSubmit}>
-                                    <TextField
-                                        id='outlined-basic'
-                                        label='Message'
-                                        variant='outlined'
-                                        value={message}
-                                        onChange={(e) => setMessage(e.target.value)}
-                                    />
-
-                                    <Button
-                                        type='submit'
-                                        variant='contained' color='primary'>Send</Button>
-                                </form>
-                            </Container>
-                        </div>
-                    </div>
-                    {/* <!-- end message --> */}
-                    <div className="w-2/5 border-l-2 px-5">
-                        <div className="flex flex-col">
-                            <div className="font-semibold text-xl py-4">Mern Stack Group</div>
-                            <img
-                                src="https://source.unsplash.com/L2cxSuKWbpo/600x600"
-                                className="object-cover rounded-xl h-64"
-                                alt=""
-                            />
-                            <div className="font-semibold py-4">Created 22 Sep 2021</div>
-                            <div className="font-light">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt,
-                                perspiciatis!
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div >
-    );
-};
+            {/* <div className="chat-header">
+                <p>Live chat</p>
+            </div>
+            <div className="chat-body"></div>
+            <div className="chat-footer">
+                <input type="text" placeholder="Type a message" />
+                <button>Send</button>
+            </div> */}
+        </div>
+    )
+}
 
-export default PrivateChat;
+export default PrivateChat

@@ -73,23 +73,16 @@ io.on('connection', (socket) => {
 
 
     // Private message
-    socket.on('send-private-message', ({ text, name, recipientId }) => {
-        console.log('recieved private message reciepentId from client', recipientId);
-        // Now emit the message back to everyone else who is connected with the server
-        io.to(recipientId).emit('recieve-private-message', {
-            text,
-            name,
-            recipientId
-        })
+    // Join room for private chat
+    socket.on('join-room', ({ username, room }) => {
+        console.log('🔥: A user joined a room', username, room);
+        socket.join(room);
     })
-    // Listen for new users
-    socket.on('new-private-user', (data) => {
-        // Add private user
-        privateUsers.push(data)
-        console.log(privateUsers, 'private users');
 
-        // Sends the list of private users to the client
-        io.emit('new-private-user-response', privateUsers);
+    // Send private message
+    socket.on('send-private-message', (data) => {
+        console.log('🔥: A user sent a private message', data);
+        socket.to(data.room).emit('recieve-private-message', data);
     })
 
 

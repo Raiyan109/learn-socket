@@ -55,8 +55,10 @@ const PrivateChat = ({ socket, username, room }) => {
                                             <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
                                                 <p className="text-sm">{messageContent.message}</p>
                                             </div>
-                                            <span className="text-xs text-gray-500 leading-none">{messageContent.time}</span>
-                                            <span className="text-xs text-gray-500 leading-none">{messageContent.author}</span>
+                                            <div className="flex justify-between mt-1">
+                                                <span className="text-xs text-gray-500 leading-none">{messageContent.time}</span>
+                                                <span className="text-xs text-gray-900 leading-none font-bold">{messageContent.author}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (
@@ -65,8 +67,10 @@ const PrivateChat = ({ socket, username, room }) => {
                                             <div className="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
                                                 <p className="text-sm">{messageContent.message}</p>
                                             </div>
-                                            <span className="text-xs text-gray-500 leading-none">{messageContent.time}</span>
-                                            <span className="text-xs text-gray-500 leading-none">{messageContent.author}</span>
+                                            <div className="flex justify-between mt-1">
+                                                <span className="text-xs text-gray-500 leading-none">{messageContent.time}</span>
+                                                <span className="text-xs text-gray-900 leading-none font-bold">{messageContent.author}</span>
+                                            </div>
                                         </div>
                                         <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
                                     </div>
@@ -96,7 +100,10 @@ const PrivateChat = ({ socket, username, room }) => {
                     </div>
 
                     <div className="bg-gray-300 p-4 flex items-center gap-3">
-                        <input className="flex items-center h-10 w-full rounded px-3 text-sm" type="text" placeholder="Type your message…"
+                        <input className="flex items-center h-10 w-full rounded px-3 text-sm"
+                            type="text"
+                            placeholder="Type your message…"
+                            value={message}
                             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                             onChange={(e) => setMessage(e.target.value)} />
 

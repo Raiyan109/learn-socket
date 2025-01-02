@@ -20,14 +20,6 @@ const PrivateChat = ({ socket, username, room }) => {
         }
     }
 
-    // useEffect(() => {
-    //     socket.on('recieve-private-message', (data) => {
-    //         console.log('🔥: A user recieved a private message', data);
-    //         setMessageList((list) => [...list, data])
-    //     })
-
-    // }, [socket])
-
     useEffect(() => {
         const handleReceiveMessage = (data) => {
             console.log('🔥: A user received a private message', data);
@@ -101,7 +93,9 @@ const PrivateChat = ({ socket, username, room }) => {
                     </div>
 
                     <div className="bg-gray-300 p-4 flex items-center gap-3">
-                        <input className="flex items-center h-10 w-full rounded px-3 text-sm" type="text" placeholder="Type your message…" onChange={(e) => setMessage(e.target.value)} />
+                        <input className="flex items-center h-10 w-full rounded px-3 text-sm" type="text" placeholder="Type your message…"
+                            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                            onChange={(e) => setMessage(e.target.value)} />
 
                         <button
                             onClick={sendMessage}

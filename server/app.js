@@ -85,6 +85,16 @@ io.on('connection', (socket) => {
         socket.to(data.room).emit('recieve-private-message', data);
     })
 
+    // User typing
+    socket.on('user-typing', ({ room, username }) => {
+        socket.to(room).emit('show-typing', { username });
+    });
+
+    socket.on('stop-typing', ({ room, username }) => {
+        socket.to(room).emit('hide-typing', { username });
+    });
+
+
 
     // Listen for when a user disconnects
     socket.on('disconnect', () => {

@@ -4,6 +4,7 @@ import { useState } from "react"
 
 const PrivateChat = ({ socket, username, room }) => {
     const [message, setMessage] = useState('')
+    const [messageList, setMessageList] = useState([])
 
     const sendMessage = async () => {
         if (message !== '') {
@@ -14,16 +15,34 @@ const PrivateChat = ({ socket, username, room }) => {
                 time: new Date(Date.now()).getHours() + ':' + new Date(Date.now()).getMinutes()
             }
             await socket.emit('send-private-message', messageData)
+            setMessageList((list) => [...list, messageData])
             setMessage('')
         }
     }
 
-    useEffect(() => {
-        socket.on('recieve-private-message', (data) => {
-            console.log('🔥: A user recieved a private message', data);
-        })
+    // useEffect(() => {
+    //     socket.on('recieve-private-message', (data) => {
+    //         console.log('🔥: A user recieved a private message', data);
+    //         setMessageList((list) => [...list, data])
+    //     })
 
-    }, [socket])
+    // }, [socket])
+
+    useEffect(() => {
+        const handleReceiveMessage = (data) => {
+            console.log('🔥: A user received a private message', data);
+            setMessageList((list) => [...list, data]);
+        };
+
+        // Add listener
+        socket.on('recieve-private-message', handleReceiveMessage);
+
+        // Cleanup function to avoid duplicate listeners
+        return () => {
+            socket.off('recieve-private-message', handleReceiveMessage);
+        };
+    }, [socket]);
+
 
 
     return (
@@ -33,26 +52,34 @@ const PrivateChat = ({ socket, username, room }) => {
                 {/* <!-- Component Start --> */}
                 <div className="flex flex-col flex-grow w-full max-w-xl bg-white shadow-xl rounded-lg overflow-hidden">
                     <div className="flex flex-col flex-grow h-0 p-4 overflow-auto">
-                        <div className="flex w-full mt-2 space-x-3 max-w-xs">
-                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
-                            <div>
-                                <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
-                                    <p className="text-sm">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        {/* <!-- Chat Messages --> */}
+                        {messageList.map((messageContent, index) =>
+                            username !== messageContent.author ? (
+                                <div className="flex w-full mt-2 space-x-3 max-w-xs">
+                                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                                    <div>
+                                        <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
+                                            <p className="text-sm">{messageContent.message}</p>
+                                        </div>
+                                        <span className="text-xs text-gray-500 leading-none">{messageContent.time}</span>
+                                        <span className="text-xs text-gray-500 leading-none">{messageContent.author}</span>
+                                    </div>
                                 </div>
-                                <span className="text-xs text-gray-500 leading-none">2 min ago</span>
-                            </div>
-                        </div>
+                            ) : (
+                                <div className="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
+                                    <div>
+                                        <div className="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
+                                            <p className="text-sm">{messageContent.message}</p>
+                                        </div>
+                                        <span className="text-xs text-gray-500 leading-none">{messageContent.time}</span>
+                                        <span className="text-xs text-gray-500 leading-none">{messageContent.author}</span>
+                                    </div>
+                                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                                </div>
+                            )
 
-                        <div className="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-                            <div>
-                                <div className="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
-                                    <p className="text-sm">Lorem ipsum dolor sit amet.</p>
-                                </div>
-                                <span className="text-xs text-gray-500 leading-none">2 min ago</span>
-                            </div>
-                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
-                        </div>
-                        <div className="flex w-full mt-2 space-x-3 max-w-xs">
+                        )}
+                        {/* <div className="flex w-full mt-2 space-x-3 max-w-xs">
                             <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
                             <div>
                                 <div className="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
@@ -70,8 +97,7 @@ const PrivateChat = ({ socket, username, room }) => {
                                 <span className="text-xs text-gray-500 leading-none">2 min ago</span>
                             </div>
                             <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
-                        </div>
-
+                        </div> */}
                     </div>
 
                     <div className="bg-gray-300 p-4 flex items-center gap-3">

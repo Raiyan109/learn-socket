@@ -64,6 +64,8 @@ io.on('connection', (socket) => {
 
     // Listen for new users
     socket.on('new-group-user', (data) => {
+        console.log(data, 'new group user');
+
         users.push(data);
 
         // Sends the list of users to the client
@@ -118,7 +120,7 @@ io.on('connection', (socket) => {
 // }
 
 server.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Socket Server is running on port ${port}`);
 });
 
 // mongoose.set("strictQuery", false);
